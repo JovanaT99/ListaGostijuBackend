@@ -61,23 +61,22 @@ model EventTable {
 }
 
 model EventGuest {
-  id               Int               @id @default(autoincrement())
-  name             String
-  isAttending      Boolean
-  eventId          Int
-  event            Event             @relation(fields: [eventId], references: [id])
+  id              Int              @id @default(autoincrement())
+  name            String
+  isAttending     Boolean
+  eventId         Int
+  event           Event            @relation(fields: [eventId], references: [id])
   eventTableGuest EventTableGuest?
-  
 }
 
 model EventTableGuest {
-  id            Int         @id @default(autoincrement())
-  eventTableId  Int
-  eventTable    EventTable  @relation(fields: [eventTableId], references: [id])
-  eventGuestId  Int @unique
-  eventGuest    EventGuest  @relation(fields: [eventGuestId], references: [id])
-  seatNumber    Int
+  id           Int        @id @default(autoincrement())
+  eventTableId Int
+  eventTable   EventTable @relation(fields: [eventTableId], references: [id])
+  eventGuestId Int        @unique
+  eventGuest   EventGuest @relation(fields: [eventGuestId], references: [id])
+  seatNumber   Int
 
-  @@unique([eventTableId, seatNumber]) 
-  @@unique([eventTableId, eventGuestId]) 
+  @@unique([eventTableId, seatNumber])
+  @@unique([eventTableId, eventGuestId])
 }
