@@ -3,6 +3,8 @@ import { Express } from 'express';
 import * as UserController from '../controllers/user.controllers';
 import { HttpNotFound } from '../utils/errors.util';
 
+import  * as EventController from '../controllers/event.controllers';
+
 const routes = (app: Express) => {
   app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -25,11 +27,12 @@ const routes = (app: Express) => {
   app.get('/v1/users/search', UserController.searchUsers);
   app.get('/v1/users/:id', UserController.getUser);
   app.post('/user', UserController.createUser);
+  app.get('/v1/allUsers', UserController.getAllUsers);
+  app.post('/v1/events',EventController.createEvent);
 
   // catch all route => 404 Not Found
   app.use(function (req, res, next) {
     return next(new HttpNotFound());
   });
-
 };
 export default routes;

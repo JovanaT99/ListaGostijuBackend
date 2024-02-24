@@ -7,7 +7,6 @@ import { validationResult } from 'express-validator';
 
 import bcrypt from 'bcrypt';
 
-
 export async function getUser(req: Request, res: Response, next: any) {
   try {
     const { id } = await Joi.object({
@@ -77,7 +76,6 @@ export const createUser = async (req: Request, res: Response) => {
       },
     });
 
-
     res.status(201).json({ message: 'User created' });
   } catch (error) {
     if (error instanceof HttpValidationError) {
@@ -85,5 +83,14 @@ export const createUser = async (req: Request, res: Response) => {
     } else {
       res.status(500).json({ message: 'Server error' });
     }
+  }
+};
+
+export const getAllUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await prisma.user.findMany();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
   }
 };
