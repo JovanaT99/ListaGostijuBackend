@@ -47,14 +47,14 @@ export async function searchUsers(req: Request, res: Response, next: any) {
   }
 }
 
-export const createUser = async (req: Request, res: Response) => {
+export const createUser = async (req: Request, res: Response, next: any) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      throw new HttpValidationError('Error validation', errors.array());
-    }
+    const { name, email, password }  = await Joi.object({
+      name: Joi.string().required(),
+      email: Joi.string().required(),
+      password: Joi.string().required()
+    }).validateAsync(req.body);
 
-    const { name, email, password } = req.body;
 
     const existingUser = await prisma.user.findUnique({
       where: {
@@ -76,21 +76,17 @@ export const createUser = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(201).json({ message: 'User created' });
+    res.status(201).json({ data: user });
   } catch (error) {
-    if (error instanceof HttpValidationError) {
-      res.status(error.statusCode).json({ errors: error.data });
-    } else {
-      res.status(500).json({ message: 'Server error' });
-    }
+    return next(error)
   }
 };
 
-export const getAllUsers = async (req: Request, res: Response) => {
+export const getAllUsers = async (req: Request, res: Response, next: any) => {
   try {
     const users = await prisma.user.findMany();
-    res.status(200).json(users);
+    res.status(200).json({data: users});
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    return next(error)
   }
 };

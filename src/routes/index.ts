@@ -29,6 +29,7 @@ const routes = (app: Express) => {
   app.post('/user', UserController.createUser);
   app.get('/v1/allUsers', UserController.getAllUsers);
   app.post('/v1/events',EventController.createEvent);
+  app.patch('/v1/events/:id',EventController.updateEvent);
 
   // catch all route => 404 Not Found
   app.use(function (req, res, next) {
