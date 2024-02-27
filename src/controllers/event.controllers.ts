@@ -51,7 +51,7 @@ export const updateEvent = async (req: Request, res: Response, next: any) => {
   }
 };
 
-export const addTabledToEvent = async (
+export const addTablesToEvent = async (
   req: Request,
   res: Response,
   next: any
