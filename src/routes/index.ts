@@ -4,6 +4,7 @@ import * as UserController from '../controllers/user.controllers';
 import { HttpNotFound } from '../utils/errors.util';
 
 import  * as EventController from '../controllers/event.controllers';
+import  * as GuestController from '../controllers/guest.controllers';
 
 const routes = (app: Express) => {
   app.use((req, res, next) => {
@@ -31,6 +32,7 @@ const routes = (app: Express) => {
   app.post('/v1/events',EventController.createEvent);
   app.patch('/v1/events/:id',EventController.updateEvent);
   app.post('/v1/:eventId/addTables',EventController.addTablesToEvent);
+  app.post('/v1/events/:eventId/guests',GuestController.addGuestsToEvent);
   
 
   // catch all route => 404 Not Found

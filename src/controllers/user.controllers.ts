@@ -3,7 +3,6 @@ import Joi from 'joi';
 
 import prisma from '../utils/prisma';
 import { HttpNotFound, HttpValidationError } from '../utils/errors.util';
-import { validationResult } from 'express-validator';
 
 import bcrypt from 'bcrypt';
 
