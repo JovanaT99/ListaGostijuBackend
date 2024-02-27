@@ -56,11 +56,11 @@ export const addTabledToEvent = async (
   res: Response,
   next: any
 ) => {
-  try{
-  const eventId = parseInt(req.params.eventId); 
+  try {
+    const eventId = parseInt(req.params.eventId);
 
     const { tables } = await Joi.object({
-      eventId: Joi.number().required(),
+      //eventId: Joi.number().required(),
       tables: Joi.array()
         .items(
           Joi.object({
@@ -85,20 +85,37 @@ export const addTabledToEvent = async (
     //prihvata niza i vraca jedan novi kad se sve resi u nizu
     const eventTables = await Promise.all(
       tables.map(
-        (table: { tableNumber: any; numberOfSeats: any; tableType: any }) =>
-          prisma.eventTable.create({
-            data: {
+        async (table: {
+          tableNumber: any;
+          numberOfSeats: any;
+          tableType: any;
+        }) => {
+          const existingTable = await prisma.eventTable.findFirst({
+            where: {
               tableNumber: table.tableNumber,
-              numberOfSeats: table.numberOfSeats,
-              tableType: table.tableType,
               eventId: eventId,
             },
-          })
+          });
+
+          if (existingTable) {
+            return existingTable;
+          } else {
+            return prisma.eventTable.create({
+              data: {
+                tableNumber: table.tableNumber,
+                numberOfSeats: table.numberOfSeats,
+                tableType: table.tableType,
+                eventId: eventId,
+              },
+            });
+          }
+        }
       )
     );
 
     return res.status(201).json({ data: eventTables });
   } catch (err) {
+    console.error('Error creating event table:', err);
     return next(err);
   }
 };
