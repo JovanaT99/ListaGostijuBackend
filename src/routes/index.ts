@@ -30,6 +30,8 @@ const routes = (app: Express) => {
   app.get('/v1/allUsers', UserController.getAllUsers);
   app.post('/v1/events',EventController.createEvent);
   app.patch('/v1/events/:id',EventController.updateEvent);
+  app.post('/v1/:eventId/addTables',EventController.addTabledToEvent);
+  
 
   // catch all route => 404 Not Found
   app.use(function (req, res, next) {

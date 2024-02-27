@@ -23,7 +23,7 @@ describe('events', () => {
     expect(body.userId).toBe(data.userId);
 
     // //@ts-ignore
-    // console.log('body', body);
+    console.log('body', body);
   });
 
   test('create bad location', async () => {

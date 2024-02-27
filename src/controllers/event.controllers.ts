@@ -29,7 +29,7 @@ export const updateEvent = async (req: Request, res: Response, next: any) => {
       id: Joi.string().required(),
     }).validateAsync(req.params);
 
-    const { location } = await Joi.object({
+    const { location, startTime, endTime, type } = await Joi.object({
       location: Joi.string().required(),
     }).validateAsync(req.body);
 
@@ -39,10 +39,65 @@ export const updateEvent = async (req: Request, res: Response, next: any) => {
       },
       data: {
         location,
+        startTime,
+        endTime,
+        type,
       },
     });
 
     return res.status(201).json(event);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const addTabledToEvent = async (
+  req: Request,
+  res: Response,
+  next: any
+) => {
+  try{
+  const eventId = parseInt(req.params.eventId); 
+
+    const { tables } = await Joi.object({
+      eventId: Joi.number().required(),
+      tables: Joi.array()
+        .items(
+          Joi.object({
+            tableNumber: Joi.number().required(),
+            numberOfSeats: Joi.number().required(),
+            tableType: Joi.string().valid('ROUND', 'SQUARE').required(),
+          })
+        )
+        .required(),
+    }).validateAsync(req.body);
+
+    const event = await prisma.event.findUnique({
+      where: {
+        id: eventId,
+      },
+    });
+    if (!event) {
+      return res.status(404).json({ message: 'Događaj nije pronađen' });
+    }
+    // kreiraje više stolova u bazi podataka
+    // kreiranje stolova istovremeno
+    //prihvata niza i vraca jedan novi kad se sve resi u nizu
+    const eventTables = await Promise.all(
+      tables.map(
+        (table: { tableNumber: any; numberOfSeats: any; tableType: any }) =>
+          prisma.eventTable.create({
+            data: {
+              tableNumber: table.tableNumber,
+              numberOfSeats: table.numberOfSeats,
+              tableType: table.tableType,
+              eventId: eventId,
+            },
+          })
+      )
+    );
+
+    return res.status(201).json({ data: eventTables });
   } catch (err) {
     return next(err);
   }

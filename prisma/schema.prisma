@@ -43,6 +43,7 @@ model Event {
   user         User         @relation(fields: [userId], references: [id])
   eventTables  EventTable[]
   eventGuests  EventGuest[]
+
 }
 
 enum TableType {
